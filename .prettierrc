@@ -1,0 +1,6 @@
+{
+  "jsxBracketSameLine": true,
+  "jsxSingleQuote": true,
+  "semi": false,
+  "trailingComma": "es5"
+}

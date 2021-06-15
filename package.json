@@ -5,11 +5,45 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "format": "prettier --write src/**/*.{js,jsx,ts,tsx,json,css,scss}",
+    "lint": "eslint --fix src/**/*"
   },
   "dependencies": {
+    "boring-avatars": "^1.5.6",
+    "cloudinary": "^1.26.0",
+    "contrast": "^1.0.1",
+    "email-to-name": "^2.0.2",
+    "firebase": "^8.6.5",
+    "lodash.debounce": "^4.0.8",
     "next": "10.2.3",
+    "nprogress": "^0.2.0",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-icons": "^4.2.0",
+    "react-query": "^3.17.0",
+    "shortid": "^2.2.16",
+    "slugify": "^1.5.3",
+    "tailwindcss-classnames": "^2.1.3",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/eslint": "^7.2.13",
+    "@types/lodash.debounce": "^4.0.6",
+    "@types/nprogress": "^0.2.0",
+    "@types/prettier": "^2.2.3",
+    "@types/react": "17.0.2",
+    "@types/react-dom": "17.0.2",
+    "@types/shortid": "^0.0.29",
+    "@types/uuid": "^8.3.0",
+    "@typescript-eslint/eslint-plugin": "^4.26.1",
+    "@typescript-eslint/parser": "^4.26.1",
+    "autoprefixer": "^10.2.6",
+    "eslint": "^7.28.0",
+    "eslint-plugin-react": "^7.24.0",
+    "postcss": "^8.3.2",
+    "prettier": "^2.3.1",
+    "tailwindcss": "^2.1.4",
+    "typescript": "^4.3.2"
   }
 }

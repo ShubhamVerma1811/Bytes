@@ -1,0 +1,7 @@
+* {
+  font-family: "Karla";
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
