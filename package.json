@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "boring-avatars": "^1.5.6",
-    "cloudinary": "^1.26.0",
     "contrast": "^1.0.1",
     "email-to-name": "^2.0.2",
     "firebase": "^8.6.5",
