@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react"
-import { classnames } from "tailwindcss-classnames"
+import React from 'react'
+import { classnames } from 'tailwindcss-classnames'
 
 type ImageCardProps = {
   src: string
@@ -7,8 +7,12 @@ type ImageCardProps = {
 
 export const ImageCard = ({ src }: ImageCardProps) => {
   return (
-    <div className={classnames("rounded-lg", "overflow-hidden", "shadow-lg")}>
-      <img src={src} alt='byte-cover' className='w-full h-full object-cover' />
+    <div className={classnames('rounded-lg', 'overflow-hidden', 'shadow-lg')}>
+      <img
+        src={src}
+        alt='byte-cover'
+        className='object-cover w-full h-full max-w-102 max-h-102'
+      />
     </div>
   )
 }
