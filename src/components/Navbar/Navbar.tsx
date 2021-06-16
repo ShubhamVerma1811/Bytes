@@ -45,6 +45,7 @@ export const Navbar = () => {
           <Link href='/upload'>Upload</Link>
         </div>
         <div className={classnames('px-3', 'py-2')}>
+          {/* @ts-ignore */}
           {user.isLoggedIn ? (
             <Fragment>
               <span onClick={() => setShowDropDownTo(!showDropDown)}>
