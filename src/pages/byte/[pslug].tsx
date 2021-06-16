@@ -1,45 +1,108 @@
-import { BoringAvatar, ImageCard, Pill } from "components"
-import Harper from "db/harper/config"
-import { GridLayout, PageLayout } from "layouts"
-import { GetServerSideProps, GetServerSidePropsContext } from "next"
-import Link from "next/link"
-import React, { Fragment } from "react"
+import { BoringAvatar, ImageCard, NotFound, Pill } from 'components'
+import Harper from 'db/harper/config'
+import humanFormat from 'human-format'
+import { GridLayout, PageLayout } from 'layouts'
+import debounce from 'lodash.debounce'
+import { GetServerSideProps, GetServerSidePropsContext } from 'next'
+import Head from 'next/head'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import React, { Fragment, useCallback, useState } from 'react'
 import {
   AiFillFacebook,
   AiFillLinkedin,
   AiOutlineTwitter,
-} from "react-icons/ai"
-import { classnames } from "tailwindcss-classnames"
-import type { PostType } from "types/Post"
-import type { TagType } from "types/Tag"
+} from 'react-icons/ai'
+import { classnames } from 'tailwindcss-classnames'
+import type { PostType } from 'types/Post'
+import type { TagType } from 'types/Tag'
 
-const postID = ({ post, tags }: { post: PostType; tags: Array<TagType> }) => {
+const harper = new Harper()
+
+const PostSlugPage = ({
+  post,
+  tags,
+  results,
+  message,
+}: {
+  post: PostType
+  tags: Array<TagType>
+  results: [] | null
+  message: string
+}) => {
+  if (!results) return <NotFound message={message} />
+  const router = useRouter()
+
+  const [reactions, setReactions] = useState(post.reactions)
+
+  const debouncedReactionSave = useCallback(
+    debounce(async () => {
+      await harper.post({
+        operation: 'update',
+        schema: 'bytes',
+        table: 'post',
+        records: [
+          {
+            pid: post.pid,
+            reactions,
+          },
+        ],
+      })
+      console.log(reactions)
+    }, 1000),
+    []
+  )
+
+  const handleReactions = () => {
+    setReactions((prev) => prev + 1)
+    debouncedReactionSave()
+  }
+
   return (
     <PageLayout>
+      <Head>
+        <title>
+          {post.title} by {post.name}| Bytes
+        </title>
+        <meta property='og:image' content={post.images[0]} />
+      </Head>
       <div>
         <div>
-          <div className={classnames("flex", "items-center")}>
-            <p className={classnames("text-3xl", "font-medium")}>
+          <div className={classnames('flex', 'items-center')}>
+            <p className={classnames('text-3xl', 'font-medium')}>
               {post.title}
             </p>
-            <div className={classnames("mr-0", "ml-auto")}>
-              <p className={classnames("text-2xl")}>🔥</p>
-              <p>0</p>
+            <div
+              className={classnames(
+                'mr-0',
+                'ml-auto',
+                'border',
+                'border-gray-200',
+                'px-2',
+                'cursor-pointer'
+              )}
+              onClick={() => handleReactions()}>
+              <p className={classnames('text-2xl')}>🔥</p>
+              <p>
+                {humanFormat(reactions, {
+                  unit: 'B',
+                })}
+              </p>
             </div>
           </div>
-          <div className={classnames("flex", "justify-between", "w-max")}>
+          <div className={classnames('flex', 'justify-between', 'w-max')}>
             <div>
               {/* @ts-ignore */}
               <BoringAvatar name={post.name} size={30} variant='beam' />
             </div>
-            <div className={classnames("mx-2")}>
+            <div className={classnames('mx-2')}>
               {/* @ts-ignore */}
               <p>By {post.name}</p>
             </div>
           </div>
         </div>
       </div>
-      <div className={classnames("flex", "flex-wrap")}>
+      <div className={classnames('flex', 'flex-wrap')}>
         {tags?.map(({ name, tid, color }) => {
           return (
             <Fragment key={tid}>
@@ -59,29 +122,44 @@ const postID = ({ post, tags }: { post: PostType; tags: Array<TagType> }) => {
           </div>
         ))}
       </GridLayout>
-      <div className={classnames("flex", "justify-center")}>
-        <p className={classnames("inline", "text-xl")}>
+      <div className={classnames('flex', 'justify-center')}>
+        <p className={classnames('inline', 'text-xl')}>
           Share On
           <span>
-            <AiOutlineTwitter
-              color='#1da1f2'
-              size={30}
-              className={classnames("inline")}
-            />
+            <a
+              href={`http://twitter.com/share?text=${post.title}&url=https://bytes.vercel.app/${router.asPath}&hashtags=stackoverflow,example,youssefusf`}
+              target='_blank'
+              rel='noopener noreferrer'>
+              <AiOutlineTwitter
+                color='#1da1f2'
+                size={30}
+                className={classnames('inline')}
+              />
+            </a>
           </span>
           <span>
-            <AiFillLinkedin
-              color='#007ab6'
-              size={30}
-              className={classnames("inline")}
-            />
+            <a
+              href={`https://www.linkedin.com/cws/share?url=https://bytes.vercel.app/${router.asPath}`}
+              target='_blank'
+              rel='noopener noreferrer'>
+              <AiFillLinkedin
+                color='#007ab6'
+                size={30}
+                className={classnames('inline')}
+              />
+            </a>
           </span>
           <span>
-            <AiFillFacebook
-              color='#1778f2'
-              size={30}
-              className={classnames("inline")}
-            />
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=https://bytes.vercel.app/${router.asPath}`}
+              target='_blank'
+              rel='noopener noreferrer'>
+              <AiFillFacebook
+                color='#1778f2'
+                size={30}
+                className={classnames('inline')}
+              />
+            </a>
           </span>
         </p>
       </div>
@@ -89,7 +167,7 @@ const postID = ({ post, tags }: { post: PostType; tags: Array<TagType> }) => {
   )
 }
 
-export default postID
+export default PostSlugPage
 
 export const getServerSideProps: GetServerSideProps = async ({
   query,
@@ -99,19 +177,32 @@ export const getServerSideProps: GetServerSideProps = async ({
   const harper = new Harper()
 
   const post = await harper.post({
-    operation: "sql",
+    operation: 'sql',
     sql: `SELECT p.*,u.name FROM bytes.post AS p INNER JOIN bytes.user AS u ON u.uid=p.uid WHERE p.slug='${pslug}'`,
   })
 
-  const tags = await harper.post({
-    operation: "sql",
-    sql: `SELECT t.* FROM bytes.post_tag AS pt INNER JOIN bytes.tag AS t ON pt.tid=t.tid WHERE pt.pid='${post[0]?.pid}'`,
-  })
+  if (post.length) {
+    const tags = await harper.post({
+      operation: 'sql',
+      sql: `SELECT t.* FROM bytes.post_tag AS pt INNER JOIN bytes.tag AS t ON pt.tid=t.tid WHERE pt.pid='${post[0]?.pid}'`,
+    })
 
-  return {
-    props: {
-      post: post[0],
-      tags,
-    },
+    return {
+      props: {
+        post: post[0],
+        tags,
+        results: post.length,
+        message: 'OK',
+      },
+    }
+  } else {
+    return {
+      props: {
+        post: null,
+        tags: null,
+        message: "Post doesn't exist",
+        result: null,
+      },
+    }
   }
 }
