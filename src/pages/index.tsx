@@ -4,17 +4,35 @@ import { GridLayout, PageLayout } from 'layouts'
 import { GetServerSideProps } from 'next'
 import Link from 'next/link'
 import { Fragment } from 'react'
+import { useQuery } from 'react-query'
 import { classnames } from 'tailwindcss-classnames'
 import { PostType } from 'types/Post'
 import { TagType } from 'types/Tag'
 
-export default function Home({
-  feedPosts,
-  feedTags,
-}: {
+const harper = new Harper()
+export default function Home(props: {
   feedPosts: Array<PostType>
   feedTags: Array<TagType>
 }) {
+  const {
+    data: feedPosts,
+    error: postsErr,
+    isLoading: postsLoading,
+  } = useQuery(
+    'feedPosts',
+    async () => {
+      return await harper.post({
+        operation: 'sql',
+        sql: 'SELECT p.*,u.name FROM bytes.post AS p INNER JOIN bytes.user AS u ON p.uid = u.uid LIMIT 6',
+      })
+    },
+    {
+      initialData: props.feedPosts,
+    }
+  )
+
+  if (postsLoading) return null
+
   return (
     <PageLayout>
       <div className={classnames('flex', 'my-10', 'justify-center')}>
@@ -23,7 +41,7 @@ export default function Home({
             <Title title='Trending Tags' />
           </div>
           <div className={classnames('flex', 'flex-wrap')}>
-            {feedTags?.map(({ name, tid, color }) => {
+            {props.feedTags?.map(({ name, tid, color }) => {
               return (
                 <Fragment key={tid}>
                   <Link href={`/tag/${name}`}>
