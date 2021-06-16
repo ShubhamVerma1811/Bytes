@@ -1,12 +1,12 @@
-import firebase from "firebase"
+import firebase from 'firebase'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAWt9uhYlfp2bCijI43Dpzpt0Su1LRqEb0",
-  authDomain: "bytes-a0a8f.firebaseapp.com",
-  projectId: "bytes-a0a8f",
-  storageBucket: "bytes-a0a8f.appspot.com",
-  messagingSenderId: "29998199376",
-  appId: "1:29998199376:web:29e894cb165e77ec12d755",
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
 }
 
 const app = !firebase.apps.length && firebase.initializeApp(firebaseConfig)
