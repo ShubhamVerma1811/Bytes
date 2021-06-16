@@ -4,6 +4,8 @@ export type PostType = {
   slug: string
   title: string
   uid: string
+  reactions: number
+  name: string
   __createdtime__?: string
   __updatedtime__?: string
 }
