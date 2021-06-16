@@ -1,17 +1,17 @@
-import { ImageCard, TagsInput } from "components"
-import firebase from "db/firebase/config"
-import Harper from "db/harper/config"
-import useRequireLogin from "hooks/useRequireLogin"
-import { GridLayout, PageLayout } from "layouts"
-import { useRouter } from "next/router"
-import React, { useRef, useState } from "react"
-import { generate as shortID } from "shortid"
-import slugify from "slugify"
-import { classnames } from "tailwindcss-classnames"
-import { PostType } from "types/Post"
-import { Post_Tag_Type } from "types/Post_Tag"
-import { TagType } from "types/Tag"
-import { v4 as uuid } from "uuid"
+import { ImageCard, Modal, TagsInput } from 'components'
+import firebase from 'db/firebase/config'
+import Harper from 'db/harper/config'
+import useRequireLogin from 'hooks/useRequireLogin'
+import { GridLayout, PageLayout } from 'layouts'
+import { useRouter } from 'next/router'
+import React, { Fragment, useRef, useState } from 'react'
+import { generate as shortID } from 'shortid'
+import slugify from 'slugify'
+import { classnames } from 'tailwindcss-classnames'
+import { PostType } from 'types/Post'
+import { Post_Tag_Type } from 'types/Post_Tag'
+import { TagType } from 'types/Tag'
+import { v4 as uuid } from 'uuid'
 
 export type PostProps = {
   pid?: string
@@ -23,37 +23,95 @@ export type PostProps = {
 
 const harper = new Harper()
 
-const upload = () => {
+const UploadPage = () => {
   const [images, setImages] = useState([])
   const [files, setFiles] = useState([])
-  const [title, setTitle] = useState("")
+  const [title, setTitle] = useState('')
   const [tags, setTags] = useState<Array<TagType>>([])
+  const [showModal, setShowModal] = useState(false)
+  const [progressMessage, setProgressMessage] = useState('')
 
   const router = useRouter()
 
   const inpBtnRef = useRef(null)
 
-  const { user, loading } = useRequireLogin({ to: "/upload" })
+  const { user, loading } = useRequireLogin({ to: '/upload' })
 
   if (loading || !user.isLoggedIn) return null
 
+  function validateFile(file: File) {
+    const allowedExtension = ['png', 'jpeg', 'jpg', 'webp']
+    const fileExtension = file.type.split('/').pop().toLowerCase()
+
+    let isValidFile = false
+
+    for (const index in allowedExtension) {
+      if (fileExtension === allowedExtension[index]) {
+        isValidFile = true
+        break
+      }
+    }
+
+    if (!isValidFile) {
+      alert('Allowed Extensions are : *.' + allowedExtension.join(', *.'))
+    }
+
+    return isValidFile
+  }
+
   const handleImageUploadAndRender = (e) => {
-    if (e.target.files[0]) {
+    const file = e.target.files[0]
+    if (file) {
+      validateFile(file)
       const reader = new FileReader()
       reader.onload = (e) => {
         setImages((prev) => [...prev, e.target.result])
       }
-      setFiles((prev) => [...prev, e.target.files[0]])
-      reader.readAsDataURL(e.target.files[0])
+      setFiles((prev) => [...prev, file])
+      reader.readAsDataURL(file)
     }
   }
 
-  const handleImageUploadToFirebase = async (e) => {
+  const createPostOnHarper = async (post) => {
+    try {
+      const dbPostRes = await harper.post({
+        operation: 'insert',
+        schema: 'bytes',
+        table: 'post',
+        records: [
+          {
+            ...post,
+          },
+        ],
+      })
+      return dbPostRes
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const createPostTagOnHarper = async (post_tag) => {
+    try {
+      const dbPostTagRes = await harper.post({
+        operation: 'insert',
+        schema: 'bytes',
+        table: 'post_tag',
+        records: [...post_tag],
+      })
+      return dbPostTagRes
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const createPost = async (e) => {
     try {
       e.preventDefault()
+      setShowModal(true)
       const pid = uuid()
       const images = []
 
+      setProgressMessage('Uploading Images to Firebase...')
       const storageRef = firebase.storage().ref()
       for (let i = 0; i < files.length; i++) {
         const file = files[i]
@@ -64,25 +122,23 @@ const upload = () => {
           .getDownloadURL()
         images.push(link)
       }
+      setProgressMessage('Images to Firebase Uploaded!!')
 
       const post: PostType = {
         pid,
         title,
         images,
+        name: user.name,
+        reactions: 0,
         slug: slugify(title + shortID()),
         uid: user.uid,
       }
 
-      const dbRes = await harper.post({
-        operation: "insert",
-        schema: "bytes",
-        table: "post",
-        records: [
-          {
-            ...post,
-          },
-        ],
-      })
+      setProgressMessage('Creating Post on Harper...')
+
+      await createPostOnHarper(post)
+
+      setProgressMessage('Post Created on Harper!')
 
       const post_tag: Array<Post_Tag_Type> = []
 
@@ -95,12 +151,11 @@ const upload = () => {
         })
       }
 
-      const dbPost_Tag = await harper.post({
-        operation: "insert",
-        schema: "bytes",
-        table: "post_tag",
-        records: [...post_tag],
-      })
+      setProgressMessage('Creating Post_Tag Relationship on Harper...')
+
+      await createPostTagOnHarper(post_tag)
+
+      setProgressMessage('Post Creating Complete! Redirecting you to the post!')
 
       router.push(`/byte/${post.slug}`)
     } catch (err) {
@@ -114,16 +169,18 @@ const upload = () => {
 
   return (
     <PageLayout>
-      <div className={classnames("max-w-4xl", "mx-auto", "mt-10")}>
-        <form onSubmit={(e) => e.preventDefault()}>
+      {showModal && <Modal progressMessage={progressMessage} />}
+      <div className={classnames('max-w-4xl', 'mx-auto', 'mt-10')}>
+        <form onSubmit={createPost} id='main-form'>
           <input
             id='title'
             type='text'
             className={classnames(
-              "text-3xl",
-              "md:text-5xl",
-              "border-b",
-              "outline-none"
+              'text-3xl',
+              'md:text-5xl',
+              'border-b',
+              'outline-none',
+              'w-full'
             )}
             value={title}
             placeholder='Title'
@@ -132,8 +189,50 @@ const upload = () => {
           />
         </form>
 
-        <div className={classnames("border-b", "outline-none")}>
+        <div className={classnames('my-3', 'border-b', 'outline-none')}>
           <TagsInput handleTagsChange={handleTagsChange} tags={tags} />
+        </div>
+
+        <div className={classnames('flex', 'justify-between', 'items-center')}>
+          <div className={classnames('my-3')}>
+            {images.length ? (
+              <button
+                form='main-form'
+                value='submit'
+                className={classnames(
+                  'px-3',
+                  'py-2',
+                  'border-2',
+                  'border-blue-500',
+                  'text-blue-500',
+                  'font-bold',
+                  'hover:bg-blue-500',
+                  'hover:text-white'
+                )}
+                type='submit'>
+                Upload
+              </button>
+            ) : null}
+          </div>
+
+          <div
+            className={classnames('my-3')}
+            onClick={() => inpBtnRef.current.click()}>
+            <button
+              className={classnames(
+                'px-3',
+                'py-2',
+                'border-2',
+                'border-green-500',
+                'text-green-500',
+                'font-bold',
+                'hover:bg-green-500',
+                'hover:text-white'
+              )}
+              type='submit'>
+              Add Image
+            </button>
+          </div>
         </div>
 
         <GridLayout>
@@ -145,29 +244,22 @@ const upload = () => {
                 </div>
               )
             })}
-            <div
-              className='rounded-md bg-blue-50 w-64 border'
-              onClick={() => inpBtnRef.current.click()}>
-              <div className='flex justify-center items-center h-auto w-64'>
-                <h1 className='text-5xl'>+</h1>
-                <input
-                  type='file'
-                  name='imaeg'
-                  id='image'
-                  ref={inpBtnRef}
-                  onChange={handleImageUploadAndRender}
-                  hidden
-                />
-              </div>
-            </div>
           </React.Fragment>
         </GridLayout>
-        <form onSubmit={handleImageUploadToFirebase}>
-          <button type='submit'>Upload</button>
-        </form>
+        <Fragment>
+          <input
+            type='file'
+            name='image'
+            accept='.png,.jpeg,.jpg,.webp'
+            id='image'
+            ref={inpBtnRef}
+            onChange={handleImageUploadAndRender}
+            hidden
+          />
+        </Fragment>
       </div>
     </PageLayout>
   )
 }
 
-export default upload
+export default UploadPage
