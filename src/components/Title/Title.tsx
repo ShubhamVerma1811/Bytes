@@ -1,10 +1,20 @@
-import React from "react"
-import { classnames } from "tailwindcss-classnames"
+import React from 'react'
+import { classnames } from 'tailwindcss-classnames'
 
-export const Title = ({ title }: { title: string }) => {
+type TitleProps = {
+  title: string
+  med?: boolean
+}
+
+export const Title = ({ title, med }: TitleProps) => {
   return (
     <div>
-      <p className={classnames("text-center", "text-4xl", "font-medium")}>
+      <p
+        className={classnames(
+          'text-center',
+          'font-medium',
+          classnames(med ? 'text-2xl' : 'text-4xl')
+        )}>
         {title}
       </p>
     </div>
