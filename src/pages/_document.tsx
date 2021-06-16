@@ -16,13 +16,19 @@ class MyDocument extends Document {
             href='https://fontless-zeta.vercel.app/css?family=Karla:ital,wght@0,400;0,500;0,600&display=swap'
             rel='stylesheet'
           />
+          <script
+            async
+            defer
+            data-website-id={process.env.UMAMI_UID}
+            src={process.env.UMAMI_URI}></script>
         </Head>
         <body
           className={classnames(
             'mx-4',
             'md:m-auto',
             'md:max-w-3xl',
-            'lg:max-w-7xl'
+            'lg:max-w-7xl',
+            'min-h-screen'
           )}>
           <Main />
           <NextScript />

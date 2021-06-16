@@ -9,6 +9,8 @@ module.exports = {
     FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
     FIREBASE_MESSAGING_SENDER_ID: process.env.FIREBASE_MESSAGING_SENDER_ID,
     FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
+    UMAMI_URI: process.env.UMAMI_URI,
+    UMAMI_UID: process.env.UMAMI_UID,
   },
   images: { domains: ['firebasestorage.googleapis.com'] },
 }
