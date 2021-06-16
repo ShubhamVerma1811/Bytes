@@ -122,7 +122,7 @@ const PostSlugPage = ({
           </div>
         ))}
       </GridLayout>
-      <div className={classnames('flex', 'justify-center','my-6')}>
+      <div className={classnames('flex', 'justify-center', 'my-6')}>
         <p className={classnames('inline', 'text-xl')}>
           Share On
           <span>

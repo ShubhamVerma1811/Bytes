@@ -17,11 +17,11 @@
   "dependencies": {
     "boring-avatars": "^1.5.6",
     "contrast": "^1.0.1",
-    "email-to-name": "^2.0.2",
     "firebase": "^8.6.5",
     "human-format": "^0.11.0",
     "lodash.debounce": "^4.0.8",
     "next": "10.2.3",
+    "next-themes": "^0.0.14",
     "nprogress": "^0.2.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",

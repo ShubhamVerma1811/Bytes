@@ -1,6 +1,6 @@
 import Document, { Head, Html, Main, NextScript } from 'next/document'
 import React from 'react'
-import { classnames } from 'tailwindcss-classnames'
+import { classnames, TArg } from 'tailwindcss-classnames'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -28,7 +28,9 @@ class MyDocument extends Document {
             'md:m-auto',
             'md:max-w-3xl',
             'lg:max-w-7xl',
-            'min-h-screen'
+            'min-h-screen',
+            'dark:bg-gray-800' as TArg,
+            'dark:text-white' as TArg
           )}>
           <Main />
           <NextScript />

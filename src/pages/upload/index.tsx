@@ -132,7 +132,7 @@ const UploadPage = () => {
         images,
         name: user.name,
         reactions: 0,
-        slug: slugify(title + shortID()),
+        slug: slugify(`${title}-${shortID()}`),
         uid: user.uid,
       }
 
@@ -187,7 +187,8 @@ const UploadPage = () => {
               'md:text-5xl',
               'border-b',
               'outline-none',
-              'w-full'
+              'w-full',
+              'bg-transparent'
             )}
             value={title}
             placeholder='Title'

@@ -1,6 +1,7 @@
 import { TwScreenDebug } from 'components'
 import { UserContext } from 'context/UserContext'
 import firebase from 'db/firebase/config'
+import { ThemeProvider } from 'next-themes'
 import { AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
@@ -43,7 +44,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Head>
             <title>Bytes | Bit Sized Learining</title>
           </Head>
-          <Component {...pageProps} />
+          <ThemeProvider attribute='class'>
+            <Component {...pageProps} />
+          </ThemeProvider>
         </UserContext.Provider>
       </QueryClientProvider>
     </React.Fragment>

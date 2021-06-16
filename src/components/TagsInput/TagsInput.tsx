@@ -75,7 +75,7 @@ export const TagsInput = ({
           type='text'
           value={tag}
           ref={searchInpRef}
-          className={classnames('outline-none', 'w-full')}
+          className={classnames('outline-none', 'w-full', 'bg-transparent')}
           placeholder='Search and Enter Tags'
           onChange={handleTagAndSearchTag}
           required
