@@ -1,38 +1,46 @@
-import { ImageCard, Pill } from "components"
-import Harper from "db/harper/config"
-import { GridLayout, PageLayout } from "layouts"
-import { GetServerSideProps, GetServerSidePropsContext } from "next"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import React from "react"
-import { PostType } from "types/Post"
-import { TagType } from "types/Tag"
+import { NotFound, Pill, PostCard } from 'components'
+import Harper from 'db/harper/config'
+import { GridLayout, PageLayout } from 'layouts'
+import { GetServerSideProps, GetServerSidePropsContext } from 'next'
+import Link from 'next/link'
+import React from 'react'
+import { classnames } from 'tailwindcss-classnames'
+import { PostType } from 'types/Post'
+import { TagType } from 'types/Tag'
 
-const tagID = ({ posts, tag }: { posts: Array<PostType>; tag: TagType }) => {
-  const router = useRouter()
+const TagID = ({
+  posts,
+  tag,
+  results,
+  message,
+}: {
+  posts: Array<PostType>
+  tag: TagType
+  results: [] | null
+  message: string
+}) => {
+  if (!results) return <NotFound message={message} />
 
   return (
     <PageLayout>
-      <div>
-        <h1>
-          Posts with the tag :
-          <Pill name={tag.name} color={tag.color} />
-        </h1>
+      <div className={classnames('flex', 'items-center')}>
+        <p className={classnames('text-xl')}>Posts with the tag :</p>
+        <Pill name={tag.name} color={tag.color} />
       </div>
       <GridLayout>
-        {posts?.map(({ images, pid, slug }) => (
-          <div key={pid}>
-            <Link href={`/byte/${slug}`}>
-              <div>{<ImageCard src={images[0]} />}</div>
-            </Link>
-          </div>
+        {posts?.map((post) => (
+          <Link href={`/byte/${post.slug}`} key={post.pid}>
+            <div>
+              <PostCard post={post} />
+            </div>
+          </Link>
         ))}
       </GridLayout>
     </PageLayout>
   )
 }
 
-export default tagID
+export default TagID
 
 export const getServerSideProps: GetServerSideProps = async ({
   query,
@@ -42,21 +50,34 @@ export const getServerSideProps: GetServerSideProps = async ({
   const harper = new Harper()
 
   const tag = await harper.post({
-    operation: "sql",
+    operation: 'sql',
     sql: `SELECT * FROM bytes.tag AS t WHERE t.name='${tname
       .toString()
       .toLowerCase()}'`,
   })
 
-  const posts = await harper.post({
-    operation: "sql",
-    sql: `SELECT p.* FROM bytes.post_tag AS pt INNER JOIN bytes.post AS p ON pt.pid=p.pid WHERE pt.tid='${tag[0].tid}'`,
-  })
+  if (tag.length) {
+    const posts = await harper.post({
+      operation: 'sql',
+      sql: `SELECT p.*,u.name FROM bytes.post_tag AS pt INNER JOIN bytes.post AS p ON pt.pid=p.pid INNER JOIN bytes.user AS u ON p.uid = u.uid WHERE pt.tid='${tag[0].tid}'`,
+    })
 
-  return {
-    props: {
-      posts,
-      tag: tag[0],
-    },
+    return {
+      props: {
+        posts,
+        tag: tag[0],
+        message: 'ok',
+        results: posts.length,
+      },
+    }
+  } else {
+    return {
+      props: {
+        posts: [],
+        tag: [],
+        message: "Tag doesn't exist",
+        results: null,
+      },
+    }
   }
 }
