@@ -38,6 +38,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       {process.env.NODE_ENV === 'development' && <TwScreenDebug />}
       <TopProgressBar />
       <QueryClientProvider client={queryClient}>
+        {/* @ts-ignore */}
         <UserContext.Provider value={{ user, setUser }}>
           <Head>
             <title>Bytes | Bit Sized Learining</title>
