@@ -1,8 +1,9 @@
 import React from 'react'
 import { createContext } from 'react'
+import { UserType } from 'types/User'
 
 export type UserContextType = {
-  user: any | null
+  user: UserType | null
   setUser: React.SetStateAction<any | null>
 }
 
