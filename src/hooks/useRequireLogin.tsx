@@ -1,8 +1,8 @@
-import { UserContext } from "context/UserContext"
-import firebase from "db/firebase/config"
-import { useRouter } from "next/router"
-import { useContext, useEffect, useState } from "react"
-import { getAuthUserFromHarper } from "services/harperRequests"
+import { UserContext } from 'context/UserContext'
+import firebase from 'db/firebase/config'
+import { useRouter } from 'next/router'
+import { useContext, useEffect, useState } from 'react'
+import { getAuthUserFromHarper } from 'services/harperRequests'
 
 const useRequireLogin = ({ to }: { to: string }) => {
   const router = useRouter()
@@ -21,7 +21,7 @@ const useRequireLogin = ({ to }: { to: string }) => {
       } else {
         setUser({})
         setLoading(false)
-        router.push("/login")
+        router.push('/login')
       }
     })
   }, [])

@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from "react"
+import React, { MouseEventHandler } from 'react'
 
 type DropdownProps = {
   list: Array<{ name: string; onClick?: MouseEventHandler<any> }>
