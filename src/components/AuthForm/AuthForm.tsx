@@ -1,11 +1,13 @@
-import { UserContext } from "context/UserContext"
-import { PageLayout } from "layouts"
-import React, { useContext, useState } from "react"
+import { UserContext } from 'context/UserContext'
+import { PageLayout } from 'layouts'
+import React, { useContext, useState } from 'react'
+import UseAnimations from 'react-useanimations'
+import loadingAnimation from 'react-useanimations/lib/loading'
 import {
   handleFirebaseLogIn,
   handleFirebaseSignUp,
-} from "services/authentication"
-import { classnames } from "tailwindcss-classnames"
+} from 'services/authentication'
+import { classnames } from 'tailwindcss-classnames'
 
 export type AuthUserType = {
   uid: string
@@ -15,28 +17,32 @@ export type AuthUserType = {
 }
 
 export const AuthForm = ({ type }: { type: string }) => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [name, setName] = useState("")
-  const [error, setError] = useState("")
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
+  const [error, setError] = useState('')
   const { setUser } = useContext(UserContext)
+  const [loading, setLoading] = useState(false)
 
   const handleLogIn = async (e) => {
     e.preventDefault()
+    setLoading(true)
     const res = await handleFirebaseLogIn(email, password)
 
     res.message ? setError(res.message) : setUser(res)
+    setLoading(false)
   }
 
   const handleSignUp = async (e) => {
     e.preventDefault()
-
+    setLoading(true)
     const res = await handleFirebaseSignUp(email, password, name)
 
     res.message ? setError(res.message) : setUser(res)
+    setLoading(false)
   }
 
-  const SignIn = () => {
+  const LogIn = () => {
     return (
       <div className=''>
         <form onSubmit={handleLogIn}>
@@ -72,16 +78,37 @@ export const AuthForm = ({ type }: { type: string }) => {
               required
             />
           </div>
-          <div className='bg-blue-500 my-2'>
+          <div
+            className={classnames(
+              classnames(loading ? 'bg-blue-300' : 'bg-blue-500'),
+              'my-2',
+              'relative'
+            )}>
             <button
-              className='w-full py-3 text-white font-semibold text-center'
+              className={classnames(
+                'w-full',
+                'py-3',
+                'text-white',
+                'font-semibold',
+                'text-center'
+              )}
               type='submit'>
               Log In
+              <span
+                className={classnames(
+                  'absolute',
+                  'top-2/4',
+                  'left-2/4',
+                  'translate-x-2/4',
+                  'translate-y-2/4'
+                )}>
+                {loading && <UseAnimations animation={loadingAnimation} />}
+              </span>
             </button>
           </div>
         </form>
         {error && (
-          <p className={classnames("font-bold", "text-red-500")}>{error}</p>
+          <p className={classnames('font-bold', 'text-red-500')}>{error}</p>
         )}
       </div>
     )
@@ -138,16 +165,39 @@ export const AuthForm = ({ type }: { type: string }) => {
               required
             />
           </div>
-          <div className='bg-blue-500 my-2'>
+          <div
+            className={classnames(
+              classnames(loading ? 'bg-blue-300' : 'bg-blue-500'),
+              'my-2',
+              'relative'
+            )}>
             <button
-              type='submit'
-              className='w-full py-3 text-white font-semibold text-center'>
-              Submit
+              className={classnames(
+                'w-full',
+                'py-3',
+                'text-white',
+                'font-semibold',
+                'text-center'
+              )}
+              type='submit'>
+              Log In
+              <span
+                className={classnames(
+                  'absolute',
+                  'top-2/4',
+                  'left-2/4',
+                  'translate-x-2/4',
+                  'translate-y-2/4'
+                )}>
+                {loading && (
+                  <UseAnimations animation={loadingAnimation} color='blue' />
+                )}
+              </span>
             </button>
           </div>
         </form>
         {error && (
-          <p className={classnames("font-bold", "text-red-500")}>{error}</p>
+          <p className={classnames('font-bold', 'text-red-500')}>{error}</p>
         )}
       </div>
     )
@@ -155,8 +205,8 @@ export const AuthForm = ({ type }: { type: string }) => {
 
   return (
     <PageLayout>
-      <div className={classnames("bg-gray-600", "p-4", "md:p-12")}>
-        {type === "signin" ? SignIn() : SignUp()}
+      <div className={classnames('bg-gray-600', 'p-4', 'md:p-12')}>
+        {type === 'login' ? LogIn() : SignUp()}
       </div>
     </PageLayout>
   )
