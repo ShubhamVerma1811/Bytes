@@ -1,7 +1,7 @@
-import { AuthUserType } from "components"
-import firebase from "db/firebase/config"
-import Harper from "db/harper/config"
-import { getAuthUserFromHarper } from "./harperRequests"
+import { AuthUserType } from 'components'
+import firebase from 'db/firebase/config'
+import Harper from 'db/harper/config'
+import { getAuthUserFromHarper } from './harperRequests'
 
 const harper = new Harper()
 
@@ -12,7 +12,7 @@ export const handleFirebaseLogIn = async (email: string, password: string) => {
       .signInWithEmailAndPassword(email, password)
 
     const authUser: AuthUserType = await getAuthUserFromHarper(user.uid)
-    window.location.replace("/")
+    window.location.replace('/')
     return { ...authUser, isLoggedIn: true }
   } catch (err) {
     console.error(err)
@@ -38,12 +38,12 @@ export const handleFirebaseSignUp = async (
     }
 
     const res = await harper.post({
-      operation: "insert",
-      schema: "bytes",
-      table: "user",
+      operation: 'insert',
+      schema: 'bytes',
+      table: 'user',
       records: [{ ...authUser }],
     })
-    window.location.replace("/")
+    window.location.replace('/')
 
     return { ...authUser, isLoggedIn: true }
   } catch (error) {
@@ -58,9 +58,9 @@ export const handleFirebaseLogOut = () => {
       .auth()
       .signOut()
       .then(() => {
-        console.log("Succesfully Logged out")
+        console.log('Succesfully Logged out')
       })
   } catch (err) {
-    console.error("LogOut ERR", err)
+    console.error('LogOut ERR', err)
   }
 }

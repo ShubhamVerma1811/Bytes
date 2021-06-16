@@ -1,5 +1,5 @@
-import { AuthUserType } from "components"
-import Harper from "db/harper/config"
+import { AuthUserType } from 'components'
+import Harper from 'db/harper/config'
 
 const harper = new Harper()
 
@@ -7,7 +7,7 @@ export const getAuthUserFromHarper = async (
   uid: string
 ): Promise<AuthUserType> => {
   const res = await harper.post({
-    operation: "sql",
+    operation: 'sql',
     sql: `SELECT * FROM bytes.user AS u WHERE u.uid='${uid}'`,
   })
 
