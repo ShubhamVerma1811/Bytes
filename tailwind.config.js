@@ -1,11 +1,17 @@
 module.exports = {
-  purge: false,
+  purge: {
+    content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  },
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      maxHeight: {
+        102: '32rem',
+      },
+    },
   },
   variants: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require('tailwind-scrollbar')],
 }
