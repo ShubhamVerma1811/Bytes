@@ -3,6 +3,7 @@ import firebase from 'db/firebase/config'
 import Harper from 'db/harper/config'
 import useRequireLogin from 'hooks/useRequireLogin'
 import { GridLayout, PageLayout } from 'layouts'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { Fragment, useRef, useState } from 'react'
 import { generate as shortID } from 'shortid'
@@ -37,6 +38,7 @@ const UploadPage = () => {
 
   const { user, loading } = useRequireLogin({ to: '/upload' })
 
+  //@ts-ignore
   if (loading || !user.isLoggedIn) return null
 
   function validateFile(file: File) {
@@ -169,6 +171,11 @@ const UploadPage = () => {
 
   return (
     <PageLayout>
+      <div>
+        <Head>
+          <title>Upload | Bytes</title>
+        </Head>
+      </div>
       {showModal && <Modal progressMessage={progressMessage} />}
       <div className={classnames('max-w-4xl', 'mx-auto', 'mt-10')}>
         <form onSubmit={createPost} id='main-form'>

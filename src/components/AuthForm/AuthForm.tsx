@@ -1,5 +1,5 @@
 import { UserContext } from 'context/UserContext'
-import { PageLayout } from 'layouts'
+import Link from 'next/link'
 import React, { useContext, useState } from 'react'
 import UseAnimations from 'react-useanimations'
 import loadingAnimation from 'react-useanimations/lib/loading'
@@ -110,6 +110,16 @@ export const AuthForm = ({ type }: { type: string }) => {
         {error && (
           <p className={classnames('font-bold', 'text-red-500')}>{error}</p>
         )}
+        <Link href='/signup'>
+          <p
+            className={classnames(
+              'text-gray-400',
+              'cursor-pointer',
+              'hover:text-white'
+            )}>
+            Create an Account?
+          </p>
+        </Link>
       </div>
     )
   }
@@ -180,7 +190,7 @@ export const AuthForm = ({ type }: { type: string }) => {
                 'text-center'
               )}
               type='submit'>
-              Log In
+              Sign Up
               <span
                 className={classnames(
                   'absolute',
@@ -199,16 +209,24 @@ export const AuthForm = ({ type }: { type: string }) => {
         {error && (
           <p className={classnames('font-bold', 'text-red-500')}>{error}</p>
         )}
+        <Link href='/login'>
+          <p
+            className={classnames(
+              'text-gray-400',
+              'cursor-pointer',
+              'hover:text-white'
+            )}>
+            Already Got an Account? Log In
+          </p>
+        </Link>
       </div>
     )
   }
 
   return (
-    <PageLayout>
-      <div className={classnames('bg-gray-600', 'p-4', 'md:p-12')}>
-        {type === 'login' ? LogIn() : SignUp()}
-      </div>
-    </PageLayout>
+    <div className={classnames('bg-gray-600', 'p-4', 'md:p-12')}>
+      {type === 'login' ? LogIn() : SignUp()}
+    </div>
   )
 }
 

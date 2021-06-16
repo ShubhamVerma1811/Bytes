@@ -1,16 +1,17 @@
-import Link from 'next/link'
-import AuthForm from '../components/AuthForm/AuthForm'
+import { PageLayout } from 'layouts'
 import Head from 'next/head'
+import AuthForm from '../components/AuthForm/AuthForm'
 
 const SignUp = () => {
   return (
-    <div>
-      <Head>
-        <title>Sign Up on Bytes</title>
-      </Head>
-      <AuthForm type='signup' />
-      <Link href='/login'>LogIn</Link>
-    </div>
+    <PageLayout>
+      <div>
+        <Head>
+          <title>Sign Up on Bytes</title>
+        </Head>
+        <AuthForm type='signup' />
+      </div>
+    </PageLayout>
   )
 }
 

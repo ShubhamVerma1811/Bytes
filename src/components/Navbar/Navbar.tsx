@@ -1,4 +1,4 @@
-import { BoringAvatar, ProfileDropdown } from 'components'
+import { BoringAvatar, ProfileDropDown } from 'components'
 import { UserContext } from 'context/UserContext'
 import Link from 'next/link'
 import React, { Fragment, useContext, useState } from 'react'
@@ -50,19 +50,7 @@ export const Navbar = () => {
               <span onClick={() => setShowDropDownTo(!showDropDown)}>
                 <BoringAvatar name={user.name} variant='beam' />
               </span>
-              {showDropDown && (
-                <ProfileDropdown
-                  list={[
-                    {
-                      name: 'Profile',
-                    },
-                    {
-                      name: 'Sign Out',
-                      onClick: () => handleLogOut(),
-                    },
-                  ]}
-                />
-              )}
+              {showDropDown && <ProfileDropDown />}
             </Fragment>
           ) : (
             <Link href='/login'>Login</Link>
