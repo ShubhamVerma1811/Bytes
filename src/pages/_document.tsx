@@ -1,6 +1,6 @@
-import Document, { Head, Html, Main, NextScript } from "next/document"
-import React from "react"
-import { classnames } from "tailwindcss-classnames"
+import Document, { Head, Html, Main, NextScript } from 'next/document'
+import React from 'react'
+import { classnames } from 'tailwindcss-classnames'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -19,10 +19,10 @@ class MyDocument extends Document {
         </Head>
         <body
           className={classnames(
-            "mx-4",
-            "md:m-auto",
-            "md:max-w-3xl",
-            "lg:max-w-7xl"
+            'mx-4',
+            'md:m-auto',
+            'md:max-w-3xl',
+            'lg:max-w-7xl'
           )}>
           <Main />
           <NextScript />
