@@ -33,13 +33,13 @@ export const TagsInput = ({
 
   const debouncedGetTagInfo = useCallback(
     debounce(async (tag) => {
-      const tags: TagType[] = await harper.post({
+      const dbTags: TagType[] = await harper.post({
         operation: 'sql',
         sql: `SELECT * FROM bytes.tag AS t WHERE t.name LIKE '%${tag}%'`,
       })
-      // @ts-ignore
-      setSuggestedTags(tags.filter((lcTag) => lcTag.tid !== suggestedTags.tid))
-      return tags
+
+      setSuggestedTags([...dbTags])
+      return dbTags
     }, 500),
     []
   )
@@ -56,6 +56,7 @@ export const TagsInput = ({
           'flex',
           'items-center',
           'overflow-auto',
+          'flex-wrap',
           'scrollbar-thin' as TArg
         )}>
         {tags.map((tag, idx) => {
@@ -71,15 +72,17 @@ export const TagsInput = ({
             </div>
           )
         })}
-        <input
-          type='text'
-          value={tag}
-          ref={searchInpRef}
-          className={classnames('outline-none', 'w-full', 'bg-transparent')}
-          placeholder='Search and Enter Tags'
-          onChange={handleTagAndSearchTag}
-          required
-        />
+        {tags.length < 4 && (
+          <input
+            type='text'
+            value={tag}
+            ref={searchInpRef}
+            className={classnames('outline-none', 'w-full', 'bg-transparent')}
+            placeholder='Enter upto 4 tags'
+            onChange={handleTagAndSearchTag}
+            required
+          />
+        )}
       </div>
       {suggestedTags.map((tag) => {
         return (
@@ -87,8 +90,11 @@ export const TagsInput = ({
             key={tag.tid}
             onClick={() => addTags(tag)}
             className={classnames(
-              'border-2',
               'bg-gray-100',
+              'dark:bg-gray-800' as TArg,
+              'dark:text-white' as TArg,
+              'dark:hover:bg-gray-600' as TArg,
+              'hover:bg-gray-300',
               'px-1',
               'py-2',
               'cursor-pointer'
