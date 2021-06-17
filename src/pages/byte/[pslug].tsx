@@ -2,21 +2,21 @@ import { BoringAvatar, ImageCard, NotFound, Pill } from 'components'
 import Harper from 'db/harper/config'
 import humanFormat from 'human-format'
 import { GridLayout, PageLayout } from 'layouts'
-import debounce from 'lodash.debounce'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import {
   AiFillFacebook,
   AiFillLinkedin,
   AiOutlineTwitter,
 } from 'react-icons/ai'
-import { getPost } from 'services/posts'
+import { getPost, updatePostReaction } from 'services/posts'
 import { classnames } from 'tailwindcss-classnames'
 import type { PostType } from 'types/Post'
 import type { TagType } from 'types/Tag'
+import { useDebouncedCallback } from 'use-debounce'
 
 const harper = new Harper()
 
@@ -34,28 +34,18 @@ const PostSlugPage = ({
   if (!results) return <NotFound message={message} />
   const router = useRouter()
 
-  const [reactions, setReactions] = useState(post.reactions)
+  const [reactions] = useState(post.reactions)
+  const [count, setCount] = useState(0)
+  const [active, setActive] = useState(false)
 
-  const debouncedReactionSave = useCallback(
-    debounce(async () => {
-      await harper.post({
-        operation: 'update',
-        schema: 'bytes',
-        table: 'post',
-        records: [
-          {
-            pid: post.pid,
-            reactions,
-          },
-        ],
-      })
-      console.log(reactions)
-    }, 1000),
-    []
-  )
+  const debouncedReactionSave = useDebouncedCallback(async () => {
+    updatePostReaction(post.slug, count)
+    setActive(false)
+  }, 800)
 
   const handleReactions = () => {
-    setReactions((prev) => prev + 1)
+    setCount((prev) => prev + 1)
+    setActive(true)
     debouncedReactionSave()
   }
 
@@ -77,27 +67,39 @@ const PostSlugPage = ({
               className={classnames(
                 'mr-0',
                 'ml-auto',
-                'border',
-                'border-gray-200',
                 'px-2',
-                'cursor-pointer'
+                'cursor-pointer',
+                'select-none'
               )}
-              onClick={() => handleReactions()}>
-              <p className={classnames('text-2xl')}>🔥</p>
-              <p>
-                {humanFormat(reactions, {
-                  unit: 'B',
-                })}
-              </p>
+              onClick={handleReactions}>
+              <div
+                className={classnames(
+                  'flex',
+                  'flex-col',
+                  'justify-center',
+                  'items-center'
+                )}>
+                <p className={classnames('text-xl')}>🔥</p>
+                <p>
+                  {humanFormat(reactions + count, {
+                    unit: 'B',
+                  })}
+                </p>
+                <p
+                  className={classnames(
+                    'text-xs',
+                    classnames(active ? 'block' : 'hidden')
+                  )}>
+                  + {count} bytes added
+                </p>
+              </div>
             </div>
           </div>
           <div className={classnames('flex', 'justify-between', 'w-max')}>
             <div>
-              {/* @ts-ignore */}
               <BoringAvatar name={post.name} size={30} variant='beam' />
             </div>
             <div className={classnames('mx-2')}>
-              {/* @ts-ignore */}
               <p>By {post.name}</p>
             </div>
           </div>
@@ -128,7 +130,7 @@ const PostSlugPage = ({
           Share On
           <span>
             <a
-              href={`http://twitter.com/share?text=${post.title}&url=https://bytes.vercel.app/${router.asPath}&hashtags=stackoverflow,example,youssefusf`}
+              href={`http://twitter.com/share?text=Checkout out this Bytes by ${post.name} on ${post.title}&url=https://bytes.vercel.app/${router.asPath}`}
               target='_blank'
               rel='noopener noreferrer'>
               <AiOutlineTwitter
