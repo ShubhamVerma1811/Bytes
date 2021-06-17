@@ -1,5 +1,4 @@
 import { BoringAvatar, ImageCard, NotFound, Pill } from 'components'
-import Harper from 'db/harper/config'
 import humanFormat from 'human-format'
 import { GridLayout, PageLayout } from 'layouts'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
@@ -18,8 +17,6 @@ import type { PostType } from 'types/Post'
 import type { TagType } from 'types/Tag'
 import { useDebouncedCallback } from 'use-debounce'
 
-const harper = new Harper()
-
 const PostSlugPage = ({
   post,
   tags,
@@ -31,7 +28,7 @@ const PostSlugPage = ({
   results: [] | null
   message: string
 }) => {
-  if (!results) return <NotFound message={message} />
+  if (!results) return <NotFound message={message} title='404 Not Found' />
   const router = useRouter()
 
   const [reactions] = useState(post.reactions)
