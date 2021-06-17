@@ -1,6 +1,8 @@
-import { AuthUserType } from 'components'
 import firebase from 'db/firebase/config'
 import Harper from 'db/harper/config'
+import { generate as shortID } from 'shortid'
+import slugify from 'slugify'
+import { UserType } from 'types/User'
 import { getAuthUserFromHarper } from './harperRequests'
 
 const harper = new Harper()
@@ -11,7 +13,7 @@ export const handleFirebaseLogIn = async (email: string, password: string) => {
       .auth()
       .signInWithEmailAndPassword(email, password)
 
-    const authUser: AuthUserType = await getAuthUserFromHarper(user.uid)
+    const authUser: UserType = await getAuthUserFromHarper(user.uid)
     window.location.replace('/')
     return { ...authUser, isLoggedIn: true }
   } catch (err) {
@@ -30,11 +32,12 @@ export const handleFirebaseSignUp = async (
       .auth()
       .createUserWithEmailAndPassword(email, password)
 
-    const authUser: AuthUserType = {
+    const authUser: UserType = {
       name,
       email: user.email,
       uid: user.uid,
       verified: false,
+      username: slugify(name, { lower: true, strict: true }) + shortID(),
     }
 
     const res = await harper.post({

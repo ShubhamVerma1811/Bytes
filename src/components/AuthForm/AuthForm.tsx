@@ -9,12 +9,6 @@ import {
 } from 'services/authentication'
 import { classnames } from 'tailwindcss-classnames'
 
-export type AuthUserType = {
-  uid: string
-  email: string
-  name: string
-  verified: boolean
-}
 
 export const AuthForm = ({ type }: { type: string }) => {
   const [email, setEmail] = useState('')
