@@ -223,24 +223,26 @@ const UploadPage = () => {
             ) : null}
           </div>
 
-          <div
-            className={classnames('my-3')}
-            onClick={() => inpBtnRef.current.click()}>
-            <button
-              className={classnames(
-                'px-3',
-                'py-2',
-                'border-2',
-                'border-green-500',
-                'text-green-500',
-                'font-bold',
-                'hover:bg-green-500',
-                'hover:text-white'
-              )}
-              type='submit'>
-              Add Image
-            </button>
-          </div>
+          {images.length < 9 && (
+            <div
+              className={classnames('my-3')}
+              onClick={() => inpBtnRef.current.click()}>
+              <button
+                className={classnames(
+                  'px-3',
+                  'py-2',
+                  'border-2',
+                  'border-green-500',
+                  'text-green-500',
+                  'font-bold',
+                  'hover:bg-green-500',
+                  'hover:text-white'
+                )}
+                type='submit'>
+                Add Image
+              </button>
+            </div>
+          )}
         </div>
 
         <GridLayout>
