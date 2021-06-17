@@ -1,9 +1,12 @@
+import { UserContext } from 'context/UserContext'
 import { useTheme } from 'next-themes'
-import React from 'react'
+import Link from 'next/link'
+import React, { useContext } from 'react'
 import { handleFirebaseLogOut } from 'services/authentication'
 
 export const ProfileDropDown = () => {
   const { theme, setTheme } = useTheme()
+  const { user } = useContext(UserContext)
 
   return (
     <div>
@@ -16,6 +19,16 @@ export const ProfileDropDown = () => {
                 role='menu'
                 aria-orientation='vertical'
                 aria-labelledby='options-menu'>
+                <Link href={`/profile/${user.username}`}>
+                  <button
+                    type='submit'
+                    className='block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-gray-800 dark:text-white'
+                    role='menuitem'>
+                    <span className='pr-4'></span>
+                    Profile
+                  </button>
+                </Link>
+                <hr />
                 <button
                   onClick={() => {
                     setTheme(theme === 'light' ? 'dark' : 'light')

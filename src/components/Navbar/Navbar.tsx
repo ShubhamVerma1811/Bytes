@@ -48,7 +48,9 @@ export const Navbar = () => {
           {/* @ts-ignore */}
           {user.isLoggedIn ? (
             <Fragment>
-              <span onClick={() => setShowDropDownTo(!showDropDown)}>
+              <span
+                onClick={() => setShowDropDownTo(!showDropDown)}
+                className={classnames('cursor-pointer')}>
                 <BoringAvatar name={user.name} variant='beam' />
               </span>
               {showDropDown && <ProfileDropDown />}
