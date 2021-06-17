@@ -1,9 +1,10 @@
 import { NotFound, Pill, PostCard } from 'components'
-import Harper from 'db/harper/config'
 import { GridLayout, PageLayout } from 'layouts'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
+import Head from 'next/head'
 import Link from 'next/link'
 import React from 'react'
+import { getTagPosts } from 'services/tags'
 import { classnames } from 'tailwindcss-classnames'
 import { PostType } from 'types/Post'
 import { TagType } from 'types/Tag'
@@ -19,10 +20,21 @@ const TagID = ({
   results: [] | null
   message: string
 }) => {
-  if (!results) return <NotFound message={message} />
+  if (results === null)
+    return <NotFound message={message} title='404 Not Found' />
+  if (!posts.length)
+    return (
+      <NotFound
+        message={'Not Posts for this tag'}
+        title={`${tag.name.toUpperCase()} | Bytes`}
+      />
+    )
 
   return (
     <PageLayout>
+      <Head>
+        <title>{tag.name.toUpperCase()} | Bytes</title>
+      </Head>
       <div className={classnames('flex', 'items-center')}>
         <p className={classnames('text-xl')}>Posts with the tag :</p>
         <Pill name={tag.name} color={tag.color} />
@@ -47,37 +59,5 @@ export const getServerSideProps: GetServerSideProps = async ({
 }: GetServerSidePropsContext) => {
   const { tid: tname } = query
 
-  const harper = new Harper()
-
-  const tag = await harper.post({
-    operation: 'sql',
-    sql: `SELECT * FROM bytes.tag AS t WHERE t.name='${tname
-      .toString()
-      .toLowerCase()}'`,
-  })
-
-  if (tag.length) {
-    const posts = await harper.post({
-      operation: 'sql',
-      sql: `SELECT p.*,u.name FROM bytes.post_tag AS pt INNER JOIN bytes.post AS p ON pt.pid=p.pid INNER JOIN bytes.user AS u ON p.uid = u.uid WHERE pt.tid='${tag[0].tid}'`,
-    })
-
-    return {
-      props: {
-        posts,
-        tag: tag[0],
-        message: 'ok',
-        results: posts.length,
-      },
-    }
-  } else {
-    return {
-      props: {
-        posts: [],
-        tag: [],
-        message: "Tag doesn't exist",
-        results: null,
-      },
-    }
-  }
+  return await getTagPosts(tname as string)
 }
