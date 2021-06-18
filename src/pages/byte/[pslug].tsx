@@ -167,25 +167,21 @@ const PostSlugPage = ({
           </div>
         </div>
       </div>
-      <div
-        className={classnames(
-          'flex',
-          'flex-wrap',
-          'items-center',
-          'justify-between'
-        )}>
-        {tags?.map(({ name, tid, color }) => {
-          return (
-            <Fragment key={tid}>
-              <Link href={`/tag/${name}`}>
-                <div>
-                  <Pill name={name} color={color} />
-                </div>
-              </Link>
-            </Fragment>
-          )
-        })}
-        <div>
+      <div className={classnames('flex', 'flex-wrap', 'items-center', 'my-3')}>
+        <div className={classnames('flex', 'flex-wrap')}>
+          {tags?.map(({ name, tid, color }) => {
+            return (
+              <Fragment key={tid}>
+                <Link href={`/tag/${name}`}>
+                  <div>
+                    <Pill name={name} color={color} />
+                  </div>
+                </Link>
+              </Fragment>
+            )
+          })}
+        </div>
+        <div className='mr-0 ml-auto'>
           {post.uid === user.uid && (
             <button
               onClick={handlePostDelete}
