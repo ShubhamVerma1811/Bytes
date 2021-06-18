@@ -1,11 +1,12 @@
 import { BoringAvatar, ImageCard, NotFound, Pill } from 'components'
+import { UserContext } from 'context/UserContext'
 import humanFormat from 'human-format'
 import { GridLayout, PageLayout } from 'layouts'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
 import {
   AiFillFacebook,
   AiFillLinkedin,
@@ -30,6 +31,7 @@ const PostSlugPage = ({
 }) => {
   if (!results) return <NotFound message={message} title='404 Not Found' />
   const router = useRouter()
+  const { user } = useContext(UserContext)
 
   const [reactions] = useState(post.reactions)
   const [count, setCount] = useState(0)
@@ -68,7 +70,12 @@ const PostSlugPage = ({
                 'cursor-pointer',
                 'select-none'
               )}
-              onClick={handleReactions}>
+              onClick={
+                // @ts-ignore
+                user.isLoggedIn
+                  ? handleReactions
+                  : () => alert('You need sign in for that')
+              }>
               <div
                 className={classnames(
                   'flex',
