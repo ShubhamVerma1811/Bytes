@@ -25,7 +25,7 @@ export const ProfileDropDown = () => {
                     className='block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-gray-800 dark:text-white'
                     role='menuitem'>
                     <span className='pr-4'></span>
-                    Profile
+                    Profile : {user.name}
                   </button>
                 </Link>
                 <hr />

@@ -178,6 +178,13 @@ const UploadPage = () => {
       </div>
       {showModal && <Modal progressMessage={progressMessage} />}
       <div className={classnames('max-w-4xl', 'mx-auto', 'mt-10')}>
+        <div className='my-4'>
+          <p className={classnames('font-bold', 'text-red-500')}>
+            To avoid spam for the sake of the demo. User is limited to 4 images
+            a post.
+          </p>
+        </div>
+
         <form onSubmit={createPost} id='main-form'>
           <input
             id='title'
@@ -223,7 +230,7 @@ const UploadPage = () => {
             ) : null}
           </div>
 
-          {images.length < 9 && (
+          {images.length < 4 && (
             <div
               className={classnames('my-3')}
               onClick={() => inpBtnRef.current.click()}>
