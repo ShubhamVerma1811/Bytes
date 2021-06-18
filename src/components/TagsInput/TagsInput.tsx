@@ -1,10 +1,10 @@
 import { Pill } from 'components'
 import Harper from 'db/harper/config'
-import debounce from 'lodash.debounce'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { AiFillCloseCircle } from 'react-icons/ai'
 import { classnames, TArg } from 'tailwindcss-classnames'
 import { TagType } from 'types/Tag'
+import { useDebouncedCallback } from 'use-debounce'
 
 const harper = new Harper()
 
@@ -31,18 +31,18 @@ export const TagsInput = ({
     handleTagsChange(tags.filter((tag) => tags.indexOf(tag) !== index))
   }
 
-  const debouncedGetTagInfo = useCallback(
-    debounce(async (tag) => {
-      const dbTags: TagType[] = await harper.post({
-        operation: 'sql',
-        sql: `SELECT * FROM bytes.tag AS t WHERE t.name LIKE '%${tag}%'`,
-      })
+  const debouncedGetTagInfo = useDebouncedCallback(async (tag) => {
+    const dbTags: TagType[] = await harper.post({
+      operation: 'sql',
+      sql: `SELECT * FROM bytes.tag AS t WHERE t.name LIKE '%${tag}%' AND t.name NOT IN (${tags
+        .map((t) => t.name)
+        .map((v) => `'${v}'`)
+        .join(',')})`,
+    })
 
-      setSuggestedTags([...dbTags])
-      return dbTags
-    }, 500),
-    []
-  )
+    setSuggestedTags([...dbTags])
+    return dbTags
+  }, 500)
 
   const handleTagAndSearchTag = (e) => {
     setTag(e.target.value)
