@@ -24,10 +24,11 @@ export const TagsInput = ({
     handleTagsChange((prev) => [...prev, { ...tag }])
     setTag('')
     setSuggestedTags([])
-    searchInpRef.current.click()
+    searchInpRef.current.focus()
   }
 
   const removeTags = (index: number) => {
+    searchInpRef.current.focus()
     handleTagsChange(tags.filter((tag) => tags.indexOf(tag) !== index))
   }
 
