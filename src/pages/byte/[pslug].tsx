@@ -1,5 +1,7 @@
-import { BoringAvatar, ImageCard, NotFound, Pill } from 'components'
+import { BoringAvatar, ImageCard, Modal, NotFound, Pill } from 'components'
 import { UserContext } from 'context/UserContext'
+import firebase from 'db/firebase/config'
+import Harper from 'db/harper/config'
 import humanFormat from 'human-format'
 import { GridLayout, PageLayout } from 'layouts'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
@@ -17,6 +19,8 @@ import { classnames } from 'tailwindcss-classnames'
 import type { PostType } from 'types/Post'
 import type { TagType } from 'types/Tag'
 import { useDebouncedCallback } from 'use-debounce'
+
+const harper = new Harper()
 
 const PostSlugPage = ({
   post,
@@ -36,6 +40,8 @@ const PostSlugPage = ({
   const [reactions] = useState(post.reactions)
   const [count, setCount] = useState(0)
   const [active, setActive] = useState(false)
+  const [progressMessage, setProgressMessage] = useState('')
+  const [showModal, setShowModal] = useState(false)
 
   const debouncedReactionSave = useDebouncedCallback(async () => {
     updatePostReaction(post.slug, count)
@@ -46,6 +52,58 @@ const PostSlugPage = ({
     setCount((prev) => prev + 1)
     setActive(true)
     debouncedReactionSave()
+  }
+
+  const deleteImagesFromFirebase = async () => {
+    try {
+      if (post.images) {
+        for (const i in post.images) {
+          const image = post.images[i]
+          const storageRef = firebase.storage().refFromURL(image)
+          const res = await storageRef.delete()
+        }
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const deletePostTagFromHarper = async () => {
+    try {
+      await harper.post({
+        operation: 'sql',
+        sql: `DELETE FROM bytes.post_tag WHERE pid = '${post.pid}'`,
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const deletePostFromHarper = async () => {
+    try {
+      await harper.post({
+        operation: 'sql',
+        sql: `DELETE FROM bytes.post WHERE pid = '${post.pid}'`,
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const handlePostDelete = async () => {
+    const ans = confirm('Are you sure you want to delete?')
+    if (ans) {
+      setShowModal(true)
+      setProgressMessage('Deleting Images from Firebase')
+      await deleteImagesFromFirebase()
+      setProgressMessage('Deleting Post_Tag from Harper')
+      await deletePostTagFromHarper()
+      setProgressMessage('Deleting Post from Harper')
+      await deletePostFromHarper()
+      setProgressMessage('Redirecting you..')
+      setShowModal(false)
+      router.push('/')
+    }
   }
 
   return (
@@ -109,7 +167,13 @@ const PostSlugPage = ({
           </div>
         </div>
       </div>
-      <div className={classnames('flex', 'flex-wrap')}>
+      <div
+        className={classnames(
+          'flex',
+          'flex-wrap',
+          'items-center',
+          'justify-between'
+        )}>
         {tags?.map(({ name, tid, color }) => {
           return (
             <Fragment key={tid}>
@@ -121,6 +185,26 @@ const PostSlugPage = ({
             </Fragment>
           )
         })}
+        <div>
+          {post.uid === user.uid && (
+            <button
+              onClick={handlePostDelete}
+              value='submit'
+              className={classnames(
+                'px-3',
+                'py-2',
+                'border-2',
+                'border-red-500',
+                'text-red-500',
+                'font-bold',
+                'hover:bg-red-500',
+                'hover:text-white'
+              )}
+              type='submit'>
+              Delete Byte
+            </button>
+          )}
+        </div>
       </div>
       <GridLayout>
         {post.images.map((src, idx) => (
@@ -169,6 +253,7 @@ const PostSlugPage = ({
             </a>
           </span>
         </p>
+        {showModal && <Modal progressMessage={progressMessage} />}
       </div>
     </PageLayout>
   )

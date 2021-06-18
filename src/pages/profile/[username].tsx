@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import { NotFound, PostCard, Title } from 'components'
 import Harper from 'db/harper/config'
 import { GridLayout, PageLayout } from 'layouts'
@@ -21,6 +22,10 @@ const UserName = ({
 
   return (
     <PageLayout>
+      <Head>
+        <title>{posts[0].name} | Bytes</title>
+      </Head>
+
       <div className={classnames('py-3', 'my-10')}>
         <Title title={`Posts of ${posts[0].name}`} />
       </div>

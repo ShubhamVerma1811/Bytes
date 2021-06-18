@@ -8,7 +8,7 @@ export const GridLayout = ({ children }) => {
         'grid',
         'grid-cols-1',
         'gap-4',
-        'md:grid-cols-2',
+        'sm:grid-cols-2',
         'lg:grid-cols-3',
         classnames('gap-y-6')
       )}>
