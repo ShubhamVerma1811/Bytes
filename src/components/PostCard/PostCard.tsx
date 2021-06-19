@@ -6,11 +6,11 @@ import { PostType } from 'types/Post'
 
 export const PostCard = ({ post }: { post: PostType }) => {
   return (
-    <div key={post.pid}>
+    <div key={post.pid} className={classnames('cursor-pointer')}>
       <Link href={`/byte/${post.slug}`}>
         <div>
           <div className={classnames('py-2')}>
-            <p className='text-2xl font-medium'>{post.title}</p>
+            <p className='text-2xl font-medium hover:underline'>{post.title}</p>
             <div className={classnames('flex', 'justify-between', 'w-max')}>
               <div>
                 <BoringAvatar name={post.name} size={30} variant='beam' />
