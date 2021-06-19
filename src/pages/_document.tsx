@@ -12,6 +12,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          <meta name='description' content='Bytes - Bite Sized Learinings!' />
           <link
             href='https://fontless-zeta.vercel.app/css?family=Karla:ital,wght@0,400;0,500;0,600&display=swap'
             rel='stylesheet'
