@@ -1,13 +1,13 @@
 import Harper from 'db/harper/config'
-import { PostType } from 'types/Post'
+import { Post } from 'types/Post'
 import { TagType } from 'types/Tag'
 
 const harper = new Harper()
 
 export const getPost = async (pslug: string) => {
-  const post: PostType[] = await harper.post({
+  const post: Post[] = await harper.post({
     operation: 'sql',
-    sql: `SELECT p.*,u.name FROM bytes.post AS p INNER JOIN bytes.user AS u ON u.uid=p.uid WHERE p.slug='${pslug}'`,
+    sql: `SELECT p.*,u.name,u.username FROM bytes.post AS p INNER JOIN bytes.user AS u ON u.uid=p.uid WHERE p.slug='${pslug}'`,
   })
 
   if (post.length) {
@@ -53,5 +53,12 @@ export const updatePostReaction = async (postSlug: string, count: number) => {
         reactions: reactions + count,
       },
     ],
+  })
+}
+
+export const getFeedPosts = async () => {
+  return await harper.post({
+    operation: 'sql',
+    sql: 'SELECT p.*,u.name,u.username FROM bytes.post AS p INNER JOIN bytes.user AS u ON p.uid = u.uid ORDER BY p.__createdtime__ LIMIT 6',
   })
 }

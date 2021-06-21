@@ -16,7 +16,7 @@ import {
 } from 'react-icons/ai'
 import { getPost, updatePostReaction } from 'services/posts'
 import { classnames } from 'tailwindcss-classnames'
-import type { PostType } from 'types/Post'
+import type { Post } from 'types/Post'
 import type { TagType } from 'types/Tag'
 import { useDebouncedCallback } from 'use-debounce'
 
@@ -28,7 +28,7 @@ const PostSlugPage = ({
   results,
   message,
 }: {
-  post: PostType
+  post: Post
   tags: Array<TagType>
   results: [] | null
   message: string
@@ -129,7 +129,6 @@ const PostSlugPage = ({
                 'select-none'
               )}
               onClick={
-                // @ts-ignore
                 user.isLoggedIn
                   ? handleReactions
                   : () => alert('You need sign in for that')
@@ -161,9 +160,16 @@ const PostSlugPage = ({
             <div>
               <BoringAvatar name={post.name} size={30} variant='beam' />
             </div>
-            <div className={classnames('mx-2')}>
-              <p>By {post.name}</p>
-            </div>
+            <Link href={`/profile/${post.username}`}>
+              <div
+                className={classnames(
+                  'mx-2',
+                  'hover:underline',
+                  'cursor-pointer'
+                )}>
+                <p>By {post.name}</p>
+              </div>
+            </Link>
           </div>
         </div>
       </div>

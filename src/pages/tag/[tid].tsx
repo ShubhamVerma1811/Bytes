@@ -6,7 +6,7 @@ import Link from 'next/link'
 import React from 'react'
 import { getTagPosts } from 'services/tags'
 import { classnames } from 'tailwindcss-classnames'
-import { PostType } from 'types/Post'
+import { Post } from 'types/Post'
 import { TagType } from 'types/Tag'
 
 const TagID = ({
@@ -15,7 +15,7 @@ const TagID = ({
   results,
   message,
 }: {
-  posts: Array<PostType>
+  posts: Array<Post>
   tag: TagType
   results: [] | null
   message: string
@@ -43,7 +43,10 @@ const TagID = ({
         {posts?.map((post) => (
           <Link href={`/byte/${post.slug}`} key={post.pid}>
             <div>
-              <PostCard post={post} />
+              <PostCard
+                post={post}
+                author={{ name: post.name, username: post.username }}
+              />
             </div>
           </Link>
         ))}

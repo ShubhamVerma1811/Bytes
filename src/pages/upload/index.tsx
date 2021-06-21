@@ -9,7 +9,7 @@ import React, { Fragment, useRef, useState } from 'react'
 import { generate as shortID } from 'shortid'
 import slugify from 'slugify'
 import { classnames } from 'tailwindcss-classnames'
-import { PostType } from 'types/Post'
+import { PostSchema } from 'types/Post'
 import { Post_Tag_Type } from 'types/Post_Tag'
 import { TagType } from 'types/Tag'
 import { v4 as uuid } from 'uuid'
@@ -126,11 +126,10 @@ const UploadPage = () => {
       }
       setProgressMessage('Images to Firebase Uploaded!!')
 
-      const post: PostType = {
+      const post: PostSchema = {
         pid,
         title,
         images,
-        name: user.name,
         reactions: 0,
         slug: slugify(`${title}-${shortID()}`),
         uid: user.uid,

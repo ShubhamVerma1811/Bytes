@@ -2,7 +2,7 @@ import firebase from 'db/firebase/config'
 import Harper from 'db/harper/config'
 import { generate as shortID } from 'shortid'
 import slugify from 'slugify'
-import { UserType } from 'types/User'
+import { UserSchema } from 'types/User'
 import { getAuthUserFromHarper } from './harperRequests'
 
 const harper = new Harper()
@@ -13,7 +13,7 @@ export const handleFirebaseLogIn = async (email: string, password: string) => {
       .auth()
       .signInWithEmailAndPassword(email, password)
 
-    const authUser: UserType = await getAuthUserFromHarper(user.uid)
+    const authUser: UserSchema = await getAuthUserFromHarper(user.uid)
     window.location.replace('/')
     return { ...authUser, isLoggedIn: true }
   } catch (err) {
@@ -32,7 +32,7 @@ export const handleFirebaseSignUp = async (
       .auth()
       .createUserWithEmailAndPassword(email, password)
 
-    const authUser: UserType = {
+    const authUser: UserSchema = {
       name,
       email: user.email,
       uid: user.uid,
@@ -40,7 +40,7 @@ export const handleFirebaseSignUp = async (
       username: slugify(name, { lower: true, strict: true }) + shortID(),
     }
 
-    const res = await harper.post({
+    await harper.post({
       operation: 'insert',
       schema: 'bytes',
       table: 'user',

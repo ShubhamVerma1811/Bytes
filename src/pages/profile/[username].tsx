@@ -1,11 +1,11 @@
-import Head from 'next/head'
 import { NotFound, PostCard, Title } from 'components'
 import Harper from 'db/harper/config'
 import { GridLayout, PageLayout } from 'layouts'
 import { GetServerSideProps } from 'next'
+import Head from 'next/head'
 import React, { Fragment } from 'react'
 import { classnames } from 'tailwindcss-classnames'
-import { PostType } from 'types/Post'
+import { Post } from 'types/Post'
 
 const harper = new Harper()
 
@@ -14,7 +14,7 @@ const UserName = ({
   results,
   message,
 }: {
-  posts: Array<PostType>
+  posts: Array<Post>
   results: [] | null
   message: string
 }) => {
@@ -31,9 +31,10 @@ const UserName = ({
       </div>
       <GridLayout>
         {posts.map((post) => {
+          const { name, username } = post
           return (
             <Fragment key={post.pid}>
-              <PostCard post={post} />
+              <PostCard post={post} author={{ name, username }} />
             </Fragment>
           )
         })}
@@ -49,7 +50,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   const posts = await harper.post({
     operation: 'sql',
-    sql: `SELECT p.* FROM bytes.post AS p INNER JOIN bytes.user AS u ON u.uid=p.uid WHERE u.username='${username}'`,
+    sql: `SELECT p.*,u.name,u.username FROM bytes.post AS p INNER JOIN bytes.user AS u ON u.uid=p.uid WHERE u.username='${username}'`,
   })
 
   if (!posts || !posts.length)

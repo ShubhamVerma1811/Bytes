@@ -1,17 +1,17 @@
 import { Pill, PostCard, Title } from 'components'
-import Harper from 'db/harper/config'
 import { GridLayout, PageLayout } from 'layouts'
 import { GetServerSideProps } from 'next'
 import Link from 'next/link'
 import { Fragment } from 'react'
 import { useQuery } from 'react-query'
+import { getFeedPosts } from 'services/posts'
+import { getFeedTags } from 'services/tags'
 import { classnames } from 'tailwindcss-classnames'
-import { PostType } from 'types/Post'
+import { Post } from 'types/Post'
 import { TagType } from 'types/Tag'
 
-const harper = new Harper()
 export default function Home(props: {
-  feedPosts: Array<PostType>
+  feedPosts: Array<Post>
   feedTags: Array<TagType>
 }) {
   const {
@@ -21,10 +21,7 @@ export default function Home(props: {
   } = useQuery(
     'feedPosts',
     async () => {
-      return await harper.post({
-        operation: 'sql',
-        sql: 'SELECT p.*,u.name FROM bytes.post AS p INNER JOIN bytes.user AS u ON p.uid = u.uid LIMIT 6',
-      })
+      return await getFeedPosts()
     },
     {
       initialData: props.feedPosts,
@@ -64,10 +61,13 @@ export default function Home(props: {
         </div>
 
         <GridLayout>
-          {feedPosts?.map((post) => {
+          {feedPosts?.map((post: Post) => {
             return (
               <Fragment key={post.pid}>
-                <PostCard post={post} />
+                <PostCard
+                  post={post}
+                  author={{ name: post.name, username: post.username }}
+                />
               </Fragment>
             )
           })}
@@ -78,16 +78,9 @@ export default function Home(props: {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const harper = new Harper()
-  const feedPosts = await harper.post({
-    operation: 'sql',
-    sql: 'SELECT p.*,u.name FROM bytes.post AS p INNER JOIN bytes.user AS u ON p.uid = u.uid LIMIT 6',
-  })
+  const feedPosts = await getFeedPosts()
 
-  const feedTags = await harper.post({
-    operation: 'sql',
-    sql: 'SELECT * FROM bytes.tag LIMIT 5',
-  })
+  const feedTags = await getFeedTags()
 
   return {
     props: {

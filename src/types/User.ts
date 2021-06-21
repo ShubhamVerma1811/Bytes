@@ -1,4 +1,4 @@
-export type UserType = {
+export type UserSchema = {
   uid: string
   email: string
   name: string
@@ -6,4 +6,8 @@ export type UserType = {
   verified: boolean
   __createdtime__?: string
   __updatedtime__?: string
+}
+
+export type User = UserSchema & {
+  isLoggedIn: boolean
 }

@@ -1,8 +1,7 @@
 import Harper from 'db/harper/config'
 
+const harper = new Harper()
 export const getTagPosts = async (tname: string) => {
-  const harper = new Harper()
-
   const tag = await harper.post({
     operation: 'sql',
     sql: `SELECT * FROM bytes.tag AS t WHERE t.name='${tname
@@ -13,7 +12,7 @@ export const getTagPosts = async (tname: string) => {
   if (tag.length) {
     const posts = await harper.post({
       operation: 'sql',
-      sql: `SELECT p.*,u.name FROM bytes.post_tag AS pt INNER JOIN bytes.post AS p ON pt.pid=p.pid INNER JOIN bytes.user AS u ON p.uid = u.uid WHERE pt.tid='${tag[0].tid}'`,
+      sql: `SELECT p.*,u.name,u.username FROM bytes.post_tag AS pt INNER JOIN bytes.post AS p ON pt.pid=p.pid INNER JOIN bytes.user AS u ON p.uid = u.uid WHERE pt.tid='${tag[0].tid}'`,
     })
 
     return {
@@ -34,4 +33,11 @@ export const getTagPosts = async (tname: string) => {
       },
     }
   }
+}
+
+export const getFeedTags = async () => {
+  return await harper.post({
+    operation: 'sql',
+    sql: 'SELECT * FROM bytes.tag AS t ORDER BY t.__createdtime__ LIMIT 6',
+  })
 }
