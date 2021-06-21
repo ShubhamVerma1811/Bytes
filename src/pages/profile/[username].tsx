@@ -4,8 +4,10 @@ import { GridLayout, PageLayout } from 'layouts'
 import { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import React, { Fragment } from 'react'
+import { getUserPosts } from 'services/posts'
 import { classnames } from 'tailwindcss-classnames'
 import { Post } from 'types/Post'
+import { PostAuthor } from 'types/User'
 
 const harper = new Harper()
 
@@ -31,7 +33,7 @@ const UserName = ({
       </div>
       <GridLayout>
         {posts.map((post) => {
-          const { name, username } = post
+          const { name, username }: PostAuthor = post
           return (
             <Fragment key={post.pid}>
               <PostCard post={post} author={{ name, username }} />
@@ -48,20 +50,5 @@ export default UserName
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { username } = query
 
-  const posts = await harper.post({
-    operation: 'sql',
-    sql: `SELECT p.*,u.name,u.username FROM bytes.post AS p INNER JOIN bytes.user AS u ON u.uid=p.uid WHERE u.username='${username}'`,
-  })
-
-  if (!posts || !posts.length)
-    return {
-      props: {
-        posts: [],
-        results: null,
-        message: 'No Posts or Invalid Username',
-      },
-    }
-  else {
-    return { props: { posts, results: posts.length, message: 'OK' } }
-  }
+  return await getUserPosts(username)
 }

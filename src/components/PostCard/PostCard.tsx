@@ -3,14 +3,14 @@ import Link from 'next/link'
 import React from 'react'
 import classnames from 'tailwindcss-classnames'
 import { PostSchema } from 'types/Post'
-import { User } from 'types/User'
+import { PostAuthor } from 'types/User'
 
 export const PostCard = ({
   post,
   author,
 }: {
   post: PostSchema
-  author: User
+  author: PostAuthor
 }) => {
   return (
     <div key={post.pid} className={classnames('cursor-pointer')}>

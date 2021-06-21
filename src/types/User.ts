@@ -11,3 +11,5 @@ export type UserSchema = {
 export type User = UserSchema & {
   isLoggedIn: boolean
 }
+
+export type PostAuthor = Omit<UserSchema, 'uid' | 'email' | 'verified'>

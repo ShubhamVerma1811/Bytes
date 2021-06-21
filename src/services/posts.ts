@@ -62,3 +62,22 @@ export const getFeedPosts = async () => {
     sql: 'SELECT p.*,u.name,u.username FROM bytes.post AS p INNER JOIN bytes.user AS u ON p.uid = u.uid ORDER BY p.__createdtime__ LIMIT 6',
   })
 }
+
+export const getUserPosts = async (username) => {
+  const posts = await harper.post({
+    operation: 'sql',
+    sql: `SELECT p.*,u.name,u.username FROM bytes.post AS p INNER JOIN bytes.user AS u ON u.uid=p.uid WHERE u.username='${username}'`,
+  })
+
+  if (!posts || !posts.length)
+    return {
+      props: {
+        posts: [],
+        results: null,
+        message: 'No Posts or Invalid Username',
+      },
+    }
+  else {
+    return { props: { posts, results: posts.length, message: 'OK' } }
+  }
+}
