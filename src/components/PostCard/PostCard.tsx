@@ -17,7 +17,15 @@ export const PostCard = ({
       <Link href={`/byte/${post.slug}`}>
         <div>
           <div className={classnames('py-2')}>
-            <p className='text-2xl font-medium hover:underline'>{post.title}</p>
+            <p
+              className={classnames(
+                'text-2xl',
+                'font-medium',
+                'hover:underline',
+                'truncate'
+              )}>
+              {post.title}
+            </p>
             <div className={classnames('flex', 'justify-between', 'w-max')}>
               <div>
                 <BoringAvatar name={author.name} size={30} variant='beam' />

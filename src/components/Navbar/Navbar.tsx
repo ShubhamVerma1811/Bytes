@@ -30,22 +30,23 @@ export const Navbar = () => {
               'text-2xl',
               'font-bold',
               'cursor-pointer',
-              'uppercase'
+              'uppercase',
+              'hover:underline'
             )}>
-            Bytes
+            <span className={classnames('sm:block', 'hidden')}>Bytes | 🎉</span>
+            <span className={classnames('sm:hidden')}>🎉</span>
           </h1>
         </Link>
       </div>
 
       <div className={classnames('flex', 'justify-around', 'items-center')}>
-        <div className={classnames('mx-4')}>
+        <div className={classnames('mx-4', 'hover:underline')}>
           <Link href='/'>Explore</Link>
         </div>
-        <div className={classnames('mx-4')}>
+        <div className={classnames('mx-4', 'hover:underline')}>
           <Link href='/upload'>Upload</Link>
         </div>
         <div className={classnames('px-3', 'py-2')}>
-          {/* @ts-ignore */}
           {user.isLoggedIn ? (
             <Fragment>
               <span
@@ -56,7 +57,11 @@ export const Navbar = () => {
               {showDropDown && <ProfileDropDown />}
             </Fragment>
           ) : (
-            <Link href='/login'>Login</Link>
+            <Link href='/login'>
+              <span className={classnames('hover:underline', 'cursor-pointer')}>
+                Login
+              </span>
+            </Link>
           )}
         </div>
       </div>

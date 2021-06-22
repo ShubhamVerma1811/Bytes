@@ -1,6 +1,5 @@
-import React from 'react'
-import { createContext } from 'react'
-import { User, UserSchema } from 'types/User'
+import React, { createContext } from 'react'
+import { User } from 'types/User'
 
 export type UserContextType = {
   user: User | null
