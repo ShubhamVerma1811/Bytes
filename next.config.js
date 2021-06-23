@@ -13,4 +13,5 @@ module.exports = {
     UMAMI_UID: process.env.UMAMI_UID,
   },
   images: { domains: ['firebasestorage.googleapis.com'] },
+  distDir: 'build',
 }
