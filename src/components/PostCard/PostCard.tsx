@@ -14,10 +14,10 @@ export const PostCard = ({
 }) => {
   return (
     <div key={post.pid} className={classnames('cursor-pointer')}>
-      <Link href={`/byte/${post.slug}`}>
+      <Link href={`/byte/${post.slug}`} passHref>
         <div>
           <div className={classnames('py-2')}>
-            <p
+            <a
               className={classnames(
                 'text-2xl',
                 'font-medium',
@@ -25,19 +25,19 @@ export const PostCard = ({
                 'truncate'
               )}>
               {post.title}
-            </p>
+            </a>
             <div className={classnames('flex', 'justify-between', 'w-max')}>
               <div>
                 <BoringAvatar name={author.name} size={30} variant='beam' />
               </div>
-              <Link href={`/profile/${author.username}`}>
+              <Link href={`/profile/${author.username}`} passHref>
                 <div
                   className={classnames(
                     'mx-2',
                     'hover:underline',
                     'cursor-pointer'
                   )}>
-                  <p>By {author.name}</p>
+                  <a>By {author.name}</a>
                 </div>
               </Link>
             </div>
