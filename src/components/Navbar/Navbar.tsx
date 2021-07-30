@@ -34,7 +34,9 @@ export const Navbar = () => {
                 'uppercase',
                 'hover:underline'
               )}>
-              <span className={classnames('sm:block', 'hidden')}>Bytes | 🎉</span>
+              <span className={classnames('sm:block', 'hidden')}>
+                Bytes | 🎉
+              </span>
               <span className={classnames('sm:hidden')}>🎉</span>
             </h1>
           </a>
@@ -43,10 +45,14 @@ export const Navbar = () => {
 
       <div className={classnames('flex', 'justify-around', 'items-center')}>
         <div className={classnames('mx-4', 'hover:underline')}>
-          <Link href='/'><a>Explore</a></Link>
+          <Link href='/'>
+            <a>Explore</a>
+          </Link>
         </div>
         <div className={classnames('mx-4', 'hover:underline')}>
-          <Link href='/upload'><a>Upload</a></Link>
+          <Link href='/upload'>
+            <a>Upload</a>
+          </Link>
         </div>
         <div className={classnames('px-3', 'py-2')}>
           {user.isLoggedIn ? (
