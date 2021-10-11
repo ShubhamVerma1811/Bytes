@@ -42,9 +42,11 @@ export default function Home(props: {
               return (
                 <Fragment key={tid}>
                   <Link href={`/tag/${name}`}>
-                    <div>
-                      <Pill name={name} color={color} />
-                    </div>
+                    <a>
+                      <div>
+                        <Pill name={name} color={color} />
+                      </div>
+                    </a>
                   </Link>
                 </Fragment>
               )

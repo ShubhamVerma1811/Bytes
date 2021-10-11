@@ -160,14 +160,14 @@ const PostSlugPage = ({
             <div>
               <BoringAvatar name={post.name} size={30} variant='beam' />
             </div>
-            <Link href={`/profile/${post.username}`}>
+            <Link href={`/profile/${post.username}`} passHref>
               <div
                 className={classnames(
                   'mx-2',
                   'hover:underline',
                   'cursor-pointer'
                 )}>
-                <p>By {post.name}</p>
+                <a>By {post.name}</a>
               </div>
             </Link>
           </div>
@@ -179,9 +179,11 @@ const PostSlugPage = ({
             return (
               <Fragment key={tid}>
                 <Link href={`/tag/${name}`}>
-                  <div>
-                    <Pill name={name} color={color} />
-                  </div>
+                  <a>
+                    <div>
+                      <Pill name={name} color={color} />
+                    </div>
+                  </a>
                 </Link>
               </Fragment>
             )

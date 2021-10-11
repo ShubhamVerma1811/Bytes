@@ -20,13 +20,15 @@ export const ProfileDropDown = () => {
                 aria-orientation='vertical'
                 aria-labelledby='options-menu'>
                 <Link href={`/profile/${user.username}`}>
-                  <button
-                    type='submit'
-                    className='block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-gray-800 dark:text-white'
-                    role='menuitem'>
-                    <span className='pr-4'></span>
-                    Profile : {user.name}
-                  </button>
+                  <a>
+                    <button
+                      type='submit'
+                      className='block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:bg-gray-800 dark:text-white'
+                      role='menuitem'>
+                      <span className='pr-4'></span>
+                      Profile : {user.name}
+                    </button>
+                  </a>
                 </Link>
                 <hr />
                 <button

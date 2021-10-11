@@ -42,12 +42,14 @@ const TagID = ({
       <GridLayout>
         {posts?.map((post) => (
           <Link href={`/byte/${post.slug}`} key={post.pid}>
-            <div>
-              <PostCard
-                post={post}
-                author={{ name: post.name, username: post.username }}
-              />
-            </div>
+            <a>
+              <div>
+                <PostCard
+                  post={post}
+                  author={{ name: post.name, username: post.username }}
+                />
+              </div>
+            </a>
           </Link>
         ))}
       </GridLayout>

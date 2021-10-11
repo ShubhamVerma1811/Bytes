@@ -18,16 +18,16 @@ export const NotFound = ({
         <title>{title}</title>
       </Head>
       <Title title={message} />
-      <Link href='/'>
+      <Link href='/' passHref>
         <div className={classnames('flex', 'justify-center')}>
-          <p
+          <a
             className={classnames(
               'font-medium',
               'underline',
               'cursor-pointer'
             )}>
             Go back Home
-          </p>
+          </a>
         </div>
       </Link>
     </PageLayout>

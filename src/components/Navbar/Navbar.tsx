@@ -25,26 +25,34 @@ export const Navbar = () => {
       )}>
       <div className={classnames('w-full')}>
         <Link href='/'>
-          <h1
-            className={classnames(
-              'text-2xl',
-              'font-bold',
-              'cursor-pointer',
-              'uppercase',
-              'hover:underline'
-            )}>
-            <span className={classnames('sm:block', 'hidden')}>Bytes | 🎉</span>
-            <span className={classnames('sm:hidden')}>🎉</span>
-          </h1>
+          <a>
+            <h1
+              className={classnames(
+                'text-2xl',
+                'font-bold',
+                'cursor-pointer',
+                'uppercase',
+                'hover:underline'
+              )}>
+              <span className={classnames('sm:block', 'hidden')}>
+                Bytes | 🎉
+              </span>
+              <span className={classnames('sm:hidden')}>🎉</span>
+            </h1>
+          </a>
         </Link>
       </div>
 
       <div className={classnames('flex', 'justify-around', 'items-center')}>
         <div className={classnames('mx-4', 'hover:underline')}>
-          <Link href='/'>Explore</Link>
+          <Link href='/'>
+            <a>Explore</a>
+          </Link>
         </div>
         <div className={classnames('mx-4', 'hover:underline')}>
-          <Link href='/upload'>Upload</Link>
+          <Link href='/upload'>
+            <a>Upload</a>
+          </Link>
         </div>
         <div className={classnames('px-3', 'py-2')}>
           {user.isLoggedIn ? (
@@ -58,9 +66,9 @@ export const Navbar = () => {
             </Fragment>
           ) : (
             <Link href='/login'>
-              <span className={classnames('hover:underline', 'cursor-pointer')}>
+              <a className={classnames('hover:underline', 'cursor-pointer')}>
                 Login
-              </span>
+              </a>
             </Link>
           )}
         </div>

@@ -104,14 +104,14 @@ export const AuthForm = ({ type }: { type: string }) => {
           <p className={classnames('font-bold', 'text-red-500')}>{error}</p>
         )}
         <Link href='/signup'>
-          <p
+          <a
             className={classnames(
               'text-gray-400',
               'cursor-pointer',
               'hover:text-white'
             )}>
             Create an Account?
-          </p>
+          </a>
         </Link>
       </div>
     )
@@ -203,14 +203,14 @@ export const AuthForm = ({ type }: { type: string }) => {
           <p className={classnames('font-bold', 'text-red-500')}>{error}</p>
         )}
         <Link href='/login'>
-          <p
+          <a
             className={classnames(
               'text-gray-400',
               'cursor-pointer',
               'hover:text-white'
             )}>
             Already Got an Account? Log In
-          </p>
+          </a>
         </Link>
       </div>
     )
