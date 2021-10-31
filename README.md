@@ -1,3 +1,5 @@
+> # ⚠️⚠️ This project is no longer maintained nor hosted anywhere.
+
 # Bytes - bite sized learnings
 
 Bytes is a platform where content creators can share bite sized learnings as images.
